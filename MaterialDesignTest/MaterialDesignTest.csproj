@@ -66,11 +66,15 @@
     </ApplicationDefinition>
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="Models\Anime.cs" />
+    <Compile Include="Models\DownloadEntry.cs" />
+    <Compile Include="Models\Downloader.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\Todo.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\AnimeViewModel.cs" />
+    <Compile Include="ViewModel\DownloadEntryViewModel.cs" />
+    <Compile Include="ViewModel\DownloaderViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
@@ -78,6 +82,9 @@
     </Compile>
     <Compile Include="Views\AnimeListView.xaml.cs">
       <DependentUpon>AnimeListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DownloaderView.xaml.cs">
+      <DependentUpon>DownloaderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -99,6 +106,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AnimeListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DownloaderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

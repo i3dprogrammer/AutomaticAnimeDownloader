@@ -29,6 +29,9 @@
         <DataTemplate DataType="{x:Type viewModels:AnimeViewModel}">
             <views:AnimeListView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:DownloaderViewModel}">
+            <views:DownloaderView/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}" x:Name="leftDrawer">
@@ -52,8 +55,7 @@
                                     IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
                     <ListBox>
                         <ListBoxItem Content="Configure" PreviewMouseLeftButtonDown="Configure_MouseLeftButtonDown"></ListBoxItem>
-                        <ListBoxItem Content="Anime List"></ListBoxItem>
-                        <ListBoxItem Content="Downloads"></ListBoxItem>
+                        <ListBoxItem Content="Downloader" PreviewMouseLeftButtonDown="Downloader_MouseLeftButtonDown"></ListBoxItem>
                         <ListBoxItem Content="About" PreviewMouseLeftButtonDown="About_MouseLeftButtonDown"></ListBoxItem>
                     </ListBox>
                 </DockPanel>

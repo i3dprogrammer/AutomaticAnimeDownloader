@@ -21,15 +21,9 @@ namespace MaterialDesignTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        private SettingsViewModel settingsViewModel;
-        private AboutViewModel aboutViewModel;
-
         public MainWindow()
         {
             InitializeComponent();
-
-            settingsViewModel = new SettingsViewModel(new Models.Settings());
-            aboutViewModel = new AboutViewModel(new Models.Todo());
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -43,19 +37,21 @@ namespace MaterialDesignTest
                 this.DragMove();
         }
 
-        private void ListBoxItem_Selected(object sender, RoutedEventArgs e)
-        {
-        }
-
         private void Configure_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ((MainWindowViewModel)DataContext).CurrentViewModel = settingsViewModel;
+            ((MainWindowViewModel)DataContext).ShowSettingsView();
             leftDrawer.IsLeftDrawerOpen = false;
         }
 
         private void About_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ((MainWindowViewModel)DataContext).CurrentViewModel = aboutViewModel;
+            ((MainWindowViewModel)DataContext).ShowAboutView();
+            leftDrawer.IsLeftDrawerOpen = false;
+        }
+
+        private void Downloader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ((MainWindowViewModel)DataContext).ShowDownloaderView();
             leftDrawer.IsLeftDrawerOpen = false;
         }
     }
