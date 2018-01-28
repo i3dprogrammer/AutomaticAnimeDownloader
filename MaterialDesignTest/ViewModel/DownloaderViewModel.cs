@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Input;
 
 namespace MaterialDesignTest.ViewModel
 {
@@ -17,6 +18,11 @@ namespace MaterialDesignTest.ViewModel
         public DownloaderViewModel(Downloader downloader)
         {
             this._downloader = downloader;
+
+            ChangeDownloaderState = new DelegateCommand(o =>
+            {
+                Paused = !Paused;
+            });
         }
 
         public ObservableCollection<DownloadEntryViewModel> DownloadList
@@ -26,6 +32,8 @@ namespace MaterialDesignTest.ViewModel
                 return _downloader.DownloadList;
             }
         }
+
+        public ICommand ChangeDownloaderState { get; set; }
 
         public string TotalDownloaded
         {
@@ -49,6 +57,18 @@ namespace MaterialDesignTest.ViewModel
             {
                 _downloader.TotalUploaded = value;
                 OnPropertyChanged("TotalUploaded");
+            }
+        }
+        public bool Paused
+        {
+            get
+            {
+                return _downloader.Paused;
+            }
+            set
+            {
+                _downloader.Paused = value;
+                OnPropertyChanged("Paused");
             }
         }
     }

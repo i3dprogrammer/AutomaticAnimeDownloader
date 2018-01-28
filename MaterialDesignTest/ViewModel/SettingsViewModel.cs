@@ -1,6 +1,7 @@
 ﻿using MaterialDesignTest.Models;
 using Microsoft.Win32;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,9 +15,10 @@ namespace MaterialDesignTest.ViewModel
 {
     public class SettingsViewModel : ViewModelBase
     {
-        private int i = 0;
         private Settings settings { get; set; }
         private MALParser.Lists.AnimeListManager animeListManager { get; set; }
+        private string filterText = "";
+        private string manualTitle = "";
 
         public SettingsViewModel(Settings settings)
         {
@@ -45,8 +47,32 @@ namespace MaterialDesignTest.ViewModel
 
             RefreshAiringAnimesCommand = new DelegateCommand(o =>
             {
-                //AnimeList.Add(new AnimeViewModel(new Anime() { Download = i % 2 == 0, Title = $"Anime {i++}" }));
                 RefreshAiringAnimes();
+            });
+
+            AddAnimeToDownloadListCommand = new DelegateCommand(o =>
+            {
+                foreach (AnimeViewModel item in ((IList)o))
+                {
+                    if (!DownloadList.ToList().Exists(x => x.Title == item.Title && x.Quality == this.Quality))
+                        DownloadList.Add(new AnimeViewModel(new Anime() { Title = item.Title, Quality = this.Quality }));
+                }
+            });
+
+            RemoveEntryFromDownloadList = new DelegateCommand(o =>
+            {
+                var temp = new List<AnimeViewModel>();
+                foreach (AnimeViewModel item in o as IList)
+                    temp.Add(item);
+
+                foreach (var item in temp)
+                    DownloadList.Remove(item);
+            });
+
+            AddManualTitleCommand = new DelegateCommand(o =>
+            {
+                DownloadList.Add(new AnimeViewModel(new Anime() { Title = ManualTitle, Quality = this.Quality }));
+                ManualTitle = "";
             });
 
             this.animeListManager = new MALParser.Lists.AnimeListManager();
@@ -57,25 +83,53 @@ namespace MaterialDesignTest.ViewModel
         private async void RefreshAiringAnimes()
         {
             Loading = Visibility.Visible;
-            List<string> selectedItems = new List<string>();
-            AnimeList.ToList().ForEach(x =>
-            {
-                if (x.Download)
-                    selectedItems.Add(x.Title);
-            });
-            AnimeList.Clear();
+            MainAnimeList.Clear();
             (await animeListManager.GetAiringScheduleAsync(MALParser.ScheduleDay.Any)).Animes.ForEach(x =>
             {
-                AnimeList.Add(new AnimeViewModel(new Anime() { Download = selectedItems.Contains(x.Title), Title = x.Title }));
+                var item = new AnimeViewModel(new Anime() { Title = x.Title });
+                MainAnimeList.Add(item);
             });
+            FilterAnimeList();
             Loading = Visibility.Hidden;
+        }
+
+        private void FilterAnimeList()
+        {
+            AnimeList.Clear();
+            MainAnimeList.ToList().ForEach(x =>
+            {
+                if (x.Title.ToLower().Contains(FilterText.ToLower()))
+                    AnimeList.Add(x);
+            });
         }
 
         public ICommand DownloadsPathSelectCommand { get; private set; }
         public ICommand TorrentsPathSelectCommand { get; private set; }
         public ICommand ConfigPathSelectCommand { get; private set; }
         public ICommand RefreshAiringAnimesCommand { get; private set; }
+        public ICommand AddAnimeToDownloadListCommand { get; set; }
+        public ICommand RemoveEntryFromDownloadList { get; set; }
+        public ICommand AddManualTitleCommand { get; set; }
 
+        public string ManualTitle
+        {
+            get { return manualTitle; }
+            set
+            {
+                manualTitle = value;
+                OnPropertyChanged("ManualTitle");
+            }
+        }
+        public string FilterText
+        {
+            get { return filterText; }
+            set
+            {
+                filterText = value;
+                OnPropertyChanged("FilterText");
+                FilterAnimeList();
+            }
+        }
         public string DownloadsPath
         {
             get
@@ -124,11 +178,51 @@ namespace MaterialDesignTest.ViewModel
                 OnPropertyChanged("Loading");
             }
         }
-        public ObservableCollection<AnimeViewModel> AnimeList
+        public bool RefreshButtonEnabled
         {
             get
             {
-                return settings.AnimeList;
+                return Loading == Visibility.Hidden;
+            }
+        }
+        public string Quality
+        {
+            get
+            {
+                return settings.Quality;
+            }
+            set
+            {
+                settings.Quality = value;
+                OnPropertyChanged("Quality");
+            }
+        }
+        public bool MinimizeOnExit
+        {
+            get
+            {
+                return settings.MinimizeOnExit;
+            }
+            set
+            {
+                settings.MinimizeOnExit = value;
+                OnPropertyChanged("MinimizeOnExit");
+            }
+        }
+        public ObservableCollection<string> Qualities { get; set; } = new ObservableCollection<string>() { "1080p", "720p", "480p" };
+        public List<AnimeViewModel> MainAnimeList
+        {
+            get
+            {
+                return settings.MainAnimeList;
+            }
+        }
+        public ObservableCollection<AnimeViewModel> AnimeList { get; set; } = new ObservableCollection<AnimeViewModel>();
+        public ObservableCollection<AnimeViewModel> DownloadList
+        {
+            get
+            {
+                return settings.DownloadList;
             }
         }
     }

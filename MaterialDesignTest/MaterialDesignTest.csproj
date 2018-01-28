@@ -34,6 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DownloadManager">
+      <HintPath>..\..\DownloadManager\DownloadManager\bin\Debug\DownloadManager.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.6.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\DownloadManager\DownloadManager\bin\Debug\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="MALParser">
       <HintPath>..\..\MALParser\MALParser\bin\Debug\MALParser.dll</HintPath>
     </Reference>
@@ -42,6 +49,14 @@
     </Reference>
     <Reference Include="MaterialDesignThemes.Wpf, Version=2.3.1.953, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.2.3.1.953\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoTorrent, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\monotorrent\build\MonoTorrent\Debug\MonoTorrent.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoTorrent.Dht, Version=0.70.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\monotorrent\build\MonoTorrent\Debug\MonoTorrent.Dht.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -64,6 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\InvertBoolConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="Models\Anime.cs" />
     <Compile Include="Models\DownloadEntry.cs" />

@@ -10,7 +10,7 @@ namespace MaterialDesignTest.Models
 {
     public class Anime : ViewModelBase
     {
-        public bool Download { get; set; }
+        public string Quality { get; set; }
         public string Title { get; set; }
     }
 }

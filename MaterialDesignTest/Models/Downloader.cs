@@ -15,9 +15,12 @@ namespace MaterialDesignTest.Models
 
         public ObservableCollection<DownloadEntryViewModel> DownloadList { get; set; }
 
+        public bool Paused { get; set; }
+
         public Downloader()
         {
             DownloadList = new ObservableCollection<DownloadEntryViewModel>();
+            Paused = true;
         }
     }
 }

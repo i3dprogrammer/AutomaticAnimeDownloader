@@ -54,5 +54,10 @@ namespace MaterialDesignTest
             ((MainWindowViewModel)DataContext).ShowDownloaderView();
             leftDrawer.IsLeftDrawerOpen = false;
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            ((MainWindowViewModel)DataContext).DownloadAllTorrents();
+        }
     }
 }

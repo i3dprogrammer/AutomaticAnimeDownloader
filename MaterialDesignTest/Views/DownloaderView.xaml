@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:local="clr-namespace:MaterialDesignTest.Views"
+             xmlns:c="clr-namespace:MaterialDesignTest.Converters"
              mc:Ignorable="d" 
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Medium"
@@ -13,33 +13,41 @@
              TextOptions.TextRenderingMode="Auto"        
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="300" Width="650">
+             d:DesignHeight="700" Width="1000">
+    <UserControl.Resources>
+        <c:InvertBoolConverter x:Key="InvertBoolConverter"/>
+    </UserControl.Resources>
     <DockPanel>
         <ToolBarTray VerticalAlignment="Top" HorizontalAlignment="Center" DockPanel.Dock="Top">
             <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
-                <Button ToolTip="Start the Downlaoder">
+                <Button ToolTip="Start the Downlaoder" IsEnabled="{Binding Paused}" Command="{Binding ChangeDownloaderState}">
                     <materialDesign:PackIcon Kind="Play"/>
                 </Button>
                 <Separator/>
-                <Button ToolTip="Stop the Downloader">
+                <Button ToolTip="Stop the Downloader" IsEnabled="{Binding Paused, Converter={StaticResource InvertBoolConverter}}" Command="{Binding ChangeDownloaderState}">
                     <materialDesign:PackIcon Kind="Stop" />
                 </Button>
+                <Separator/>
             </ToolBar>
         </ToolBarTray>
-        <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding DownloadList}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Visible" Width="650">
+        <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding DownloadList}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Visible">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
-                <DataGridTextColumn Header="Size" Binding="{Binding Size}"/>
-                <DataGridTemplateColumn Header="Progress" >
+                <DataGridTextColumn Header="Title" Width="2*" Binding="{Binding Title}"/>
+                <DataGridTextColumn Header="Size" Width="*" Binding="{Binding Size}"/>
+                <DataGridTemplateColumn Header="Progress" Width="2*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ProgressBar Maximum="100" Value="{Binding Progress}"></ProgressBar>
+                            <StackPanel Orientation="Horizontal">
+                                <ProgressBar Maximum="100" Value="{Binding Progress}"/>
+                                <Label Content="{Binding Progress}" Margin="5 0 0 0"/>
+                                <Label Content="%"/>
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Down Speed" Binding="{Binding DSpeed}"/>
-                <DataGridTextColumn Header="Up Speed" Binding="{Binding USpeed}"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+                <DataGridTextColumn Header="Download Speed" Width="*" Binding="{Binding DSpeed}"/>
+                <DataGridTextColumn Header="Upload Speed" Width="*" Binding="{Binding USpeed}"/>
+                <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status}"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

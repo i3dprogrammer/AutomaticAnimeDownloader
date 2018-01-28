@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonoTorrent.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,6 @@ namespace MaterialDesignTest.Models
     {
         public string Title { get; set; }
         public string Size { get; set; }
-        public int Progress { get; set; }
-        public string Status { get; set; }
-        public string DSpeed { get; set; }
-        public string USpeed{ get; set; }
+        public TorrentManager TorrentManager { get; set; }
     }
 }

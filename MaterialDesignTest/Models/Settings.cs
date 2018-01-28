@@ -15,12 +15,16 @@ namespace MaterialDesignTest.Models
         public string TorrentsPath { get; set; }
         public string ConfigPath { get; set; }
         public Visibility Loading { get; set; }
+        public string Quality { get; set; } = "480p";
+        public bool MinimizeOnExit { get; set; } = false;
 
-        public ObservableCollection<AnimeViewModel> AnimeList { get; set; }
+        public List<AnimeViewModel> MainAnimeList { get; set; }
+        public ObservableCollection<AnimeViewModel> DownloadList { get; set; }
 
         public Settings()
         {
-            AnimeList = new ObservableCollection<AnimeViewModel>();
+            MainAnimeList = new List<AnimeViewModel>();
+            DownloadList = new ObservableCollection<AnimeViewModel>() { new AnimeViewModel(new Anime() { Title = "Beatless", Quality = "480p" }) };
             Loading = Visibility.Hidden;
         }
     }

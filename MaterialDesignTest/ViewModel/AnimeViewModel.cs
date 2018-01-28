@@ -32,16 +32,16 @@ namespace MaterialDesignTest.ViewModel
             }
         }
 
-        public bool Download
+        public string Quality
         {
             get
             {
-                return anime.Download;
+                return anime.Quality;
             }
             set
             {
-                anime.Download = value;
-                OnPropertyChanged("Download");
+                anime.Quality = value;
+                OnPropertyChanged("Quality");
             }
         }
     }

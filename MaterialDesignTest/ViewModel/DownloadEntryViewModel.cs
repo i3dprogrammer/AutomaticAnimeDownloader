@@ -4,14 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
+using System.Windows;
 
 namespace MaterialDesignTest.ViewModel
 {
     class DownloadEntryViewModel : ViewModelBase
     {
+        private Timer timer;
+
         public DownloadEntryViewModel(DownloadEntry downloadEntry)
         {
             this._downloadEntry = downloadEntry;
+
+            timer = new Timer(1000);
+            timer.Elapsed += (o, k) => {
+                OnPropertyChanged("Status");
+                OnPropertyChanged("Progress");
+                OnPropertyChanged("DSpeed");
+                OnPropertyChanged("USpeed");
+            };
+            timer.Start();
         }
 
         private DownloadEntry _downloadEntry { get; set; }
@@ -42,52 +55,20 @@ namespace MaterialDesignTest.ViewModel
         }
         public string Status
         {
-            get
-            {
-                return _downloadEntry.Status;
-            }
-            set
-            {
-                _downloadEntry.Status = value;
-                OnPropertyChanged("Status");
-            }
+            get { return _downloadEntry.TorrentManager.State.ToString(); }
         }
         public int Progress
         {
-            get
-            {
-                return _downloadEntry.Progress;
-            }
-            set
-            {
-                _downloadEntry.Progress = value;
-                OnPropertyChanged("Progress");
-            }
+            get { return (int)_downloadEntry.TorrentManager.Progress; }
+            set { }
         }
         public string DSpeed
         {
-            get
-            {
-                return _downloadEntry.DSpeed;
-            }
-            set
-            {
-                _downloadEntry.DSpeed = value;
-                OnPropertyChanged("DSpeed");
-            }
+            get { return $"{_downloadEntry.TorrentManager.Monitor.DownloadSpeed / 1024} KB/s"; }
         }
         public string USpeed
         {
-            get
-            {
-                return _downloadEntry.USpeed;
-            }
-            set
-            {
-                _downloadEntry.USpeed = value;
-                OnPropertyChanged("USpeed");
-            }
+            get { return $"{_downloadEntry.TorrentManager.Monitor.UploadSpeed / 1024} KB/s"; }
         }
-
     }
 }

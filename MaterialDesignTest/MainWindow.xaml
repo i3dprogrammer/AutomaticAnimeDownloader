@@ -16,9 +16,10 @@
         BorderThickness="2"
         BorderBrush="LightGray"
         mc:Ignorable="d"
-        Width="650"
-        Height="400"
-        Title="Nyaa.si Anime Downloader" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" MouseDown="Window_MouseDown">
+        Width="1000"
+        Height="720"
+        FontSize="15"
+        Title="Nyaa.si Anime Downloader" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" MouseDown="Window_MouseDown" WindowState="{Binding CurrentWindowState, Mode=TwoWay}">
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewModels:AboutViewModel}">
             <views:AboutView/>
@@ -40,8 +41,9 @@
                     <materialDesign:ColorZone Mode="PrimaryMid" DockPanel.Dock="Top" Padding="10">
                         <DockPanel>
                             <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False" x:Name="MenuToggleButton"
-                              Command="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"/>
-                            <Button HorizontalAlignment="Right" Margin="5 5 5 5" Content="X" Click="Button_Click"/>
+                              Command="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" Cursor="Hand"/>
+                            <Button HorizontalAlignment="Right" Margin="5 5 5 5" Content="X"  Command="{Binding closeApplication}" materialDesign:ShadowAssist.ShadowDepth="Depth3"/>
+                            <Button HorizontalAlignment="Right" Margin="5 5 5 5" Content="Check" materialDesign:ShadowAssist.ShadowDepth="Depth3" Click="Button_Click_1"/>
                         </DockPanel>
                     </materialDesign:ColorZone>
                     <ContentControl Content="{Binding Path=CurrentViewModel}"/>
@@ -52,7 +54,7 @@
                     <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                                     DockPanel.Dock="Top"
                                     HorizontalAlignment="Right" Margin="16"
-                                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
+                                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" Cursor="Hand"/>
                     <ListBox>
                         <ListBoxItem Content="Configure" PreviewMouseLeftButtonDown="Configure_MouseLeftButtonDown"></ListBoxItem>
                         <ListBoxItem Content="Downloader" PreviewMouseLeftButtonDown="Downloader_MouseLeftButtonDown"></ListBoxItem>
