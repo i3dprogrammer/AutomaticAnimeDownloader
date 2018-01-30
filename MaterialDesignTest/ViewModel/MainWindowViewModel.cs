@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -13,81 +14,123 @@ namespace MaterialDesignTest.ViewModel
     public class MainWindowViewModel : ViewModelBase
     {
         public static DownloadManager.Manager _downloadManager;
+
+        private int timerCheckInterval = 30 * 60 * 1000;
         private SettingsViewModel _settingsViewModel;
         private AboutViewModel _aboutViewModel;
         private DownloaderViewModel _downloaderViewModel;
         private DownloadManager.NyaaWrapper _nyaaWrapper;
-        private HttpClient _client;
+        private Timer checkForNewEpisodes_timer;
+        private Timer startTheDownloader_timer;
+        private IniFile _configFile;
 
         public ICommand closeApplication { get; private set; }
 
         public MainWindowViewModel()
         {
+            _configFile = new IniFile();
+            // View model data.
+            _settingsViewModel = new SettingsViewModel(new Settings(), _configFile);
+            _aboutViewModel = new AboutViewModel(new Todo());
+            _downloaderViewModel = new DownloaderViewModel(new Downloader() { Paused = false });
+
+            CurrentViewModel = _settingsViewModel;
+
+            // Initializing the downloader.
+
             _downloadManager = new DownloadManager.Manager();
             _downloadManager.SetConfigPath();
             _downloadManager.SetDownloadPath();
             _downloadManager.SetTorrentsPath();
             _downloadManager.InitializeEngine();
 
+            // Instantiating Nyaa wrapper.
             _nyaaWrapper = new DownloadManager.NyaaWrapper();
-            _client = new HttpClient();
 
-            _settingsViewModel = new SettingsViewModel(new Settings());
-            _aboutViewModel = new AboutViewModel(new Todo());
-            _downloaderViewModel = new DownloaderViewModel(new Downloader() { Paused = false });
+            // To check for the download state change.
+            _downloaderViewModel.PropertyChanged += _downloaderViewModel_PropertyChanged;
+            _settingsViewModel.PropertyChanged += _settingsViewModel_PropertyChanged;
 
-            _downloaderViewModel.PropertyChanged += _settingsViewModel_PropertyChanged;
-
-            CurrentViewModel = _settingsViewModel;
-
+            // Close application command
             closeApplication = new DelegateCommand(o =>
             {
+                _settingsViewModel.SaveSettings();
                 if (_settingsViewModel.MinimizeOnExit)
                     CurrentWindowState = WindowState.Minimized;
                 else
                 {
-                    _downloadManager.Shutdown();
-                    Environment.Exit(0);
+                    try
+                    {
+                        _downloadManager.ShutdownEngine();
+                        Environment.Exit(0);
+                    } catch
+                    {
+                        Environment.Exit(0);
+                    }
                 }
             });
-        }
 
-        private void _settingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName == "Paused")
+            // The periodically timer check for new episodes.
+            checkForNewEpisodes_timer = new Timer(DownloadAllTorrents, null, timerCheckInterval, timerCheckInterval);
+
+            foreach (var file in System.IO.Directory.GetFiles("Downloads"))
             {
-                if (_downloaderViewModel.Paused == false)
+                if (file.EndsWith(".torrent"))
                 {
-                    foreach (var manager in _downloadManager.m_torrents)
-                        manager.Start();
-                }
-                else
-                {
-                    foreach (var manager in _downloadManager.m_torrents)
-                        manager.Stop();
+                    var item = new DownloadEntry()
+                    {
+                        TorrentManager = _downloadManager.AddTorrentFile(file),
+                    };
+                    _downloaderViewModel.DownloadList.Add(new DownloadEntryViewModel(item));
+                    item.Title = item.TorrentManager.Torrent.Files[0].Path;
+                    item.Size = "0";
                 }
             }
         }
 
-        public async void DownloadAllTorrents()
+        private void _settingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var items = (await _nyaaWrapper.ParseHorribleSubsAsync());
+            _settingsViewModel.SaveSettings();
+        }
+
+        private void _downloaderViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // If the downloader state changed, change all the manager states.
+            if (e.PropertyName == "Paused")
+            {
+                if (_downloaderViewModel.Paused == false)
+                    _downloadManager.StartAll();
+                else
+                    _downloadManager.StopAll();
+            }
+        }
+
+        public async void DownloadAllTorrents(object state)
+        {
+            var items = (await _nyaaWrapper.ParseProvidersSubsAsync());
             try
             {
                 items.ToList().ForEach(x =>
                 {
-                    if (_settingsViewModel.DownloadList.ToList().Exists(y => y.Title == x.Title && y.Quality == x.Quality))
+                    MessageBox.Show(x.Title);
+                    // If the item doesn't already exist in the downloader queue.
+                    if (!_downloaderViewModel.DownloadList.ToList().Exists(z => z.Title == $"{x.Title} - {x.Episode} - [{x.Quality}]"))
                     {
-                        var item = new DownloadEntry()
+                        // If the episode exists in our "should download list"
+                        if (_settingsViewModel.DownloadList.ToList().Exists(y => y.Title == x.Title && y.Quality == x.Quality))
                         {
-                            Title = $"{x.Title} - {x.Episode} - [{x.Quality}]",
-                            Size = x.TorrentSize,
-                            TorrentManager = _downloadManager.AddTorrentUrl(x.TorrentURL),
-                        };
-                        _downloaderViewModel.DownloadList.Add(new DownloadEntryViewModel(item));
-                        if (!_downloaderViewModel.Paused)
-                            item.TorrentManager.Start();
+                            var item = new DownloadEntry()
+                            {
+                                Title = $"{x.Title} - {x.Episode} - [{x.Quality}]",
+                                Size = x.TorrentSize,
+                                TorrentManager = _downloadManager.AddTorrentUrl(x.TorrentURL),
+                            };
+                            _downloaderViewModel.DownloadList.Add(new DownloadEntryViewModel(item));
 
+                            // If the downloader is started, start downloading the episode.
+                            if (!_downloaderViewModel.Paused)
+                                item.TorrentManager.Start();
+                        }
                     }
                 });
             }
@@ -96,6 +139,8 @@ namespace MaterialDesignTest.ViewModel
                 MessageBox.Show(ex.Message);
             }
         }
+
+        #region ViewModelData
 
         // ViewModel that is currently bound to the ContentControl
         private ViewModelBase _currentViewModel;
@@ -133,5 +178,7 @@ namespace MaterialDesignTest.ViewModel
             CurrentViewModel = _downloaderViewModel;
         }
 
+
+        #endregion
     }
 }

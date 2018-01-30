@@ -18,36 +18,70 @@
         <c:InvertBoolConverter x:Key="InvertBoolConverter"/>
     </UserControl.Resources>
     <DockPanel>
-        <ToolBarTray VerticalAlignment="Top" HorizontalAlignment="Center" DockPanel.Dock="Top">
-            <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
-                <Button ToolTip="Start the Downlaoder" IsEnabled="{Binding Paused}" Command="{Binding ChangeDownloaderState}">
-                    <materialDesign:PackIcon Kind="Play"/>
-                </Button>
-                <Separator/>
-                <Button ToolTip="Stop the Downloader" IsEnabled="{Binding Paused, Converter={StaticResource InvertBoolConverter}}" Command="{Binding ChangeDownloaderState}">
-                    <materialDesign:PackIcon Kind="Stop" />
-                </Button>
-                <Separator/>
-            </ToolBar>
-        </ToolBarTray>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <ToolBarTray DockPanel.Dock="Top">
+                <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
+                    <Button ToolTip="Start the Downlaoder" IsEnabled="{Binding Paused}" Command="{Binding ChangeDownloaderState}">
+                        <materialDesign:PackIcon Kind="Play"/>
+                    </Button>
+                    <Separator/>
+                    <Button ToolTip="Stop the Downloader" IsEnabled="{Binding Paused, Converter={StaticResource InvertBoolConverter}}" Command="{Binding ChangeDownloaderState}">
+                        <materialDesign:PackIcon Kind="Stop" />
+                    </Button>
+                    <Separator/>
+                </ToolBar>
+            </ToolBarTray>
+            <CheckBox Content="Start downloader at" Margin="30 0 0 0"/>
+            <materialDesign:TimePicker Is24Hours="False" VerticalAlignment="Center" x:Name="PresetTimePicker" Width="150" Margin="30 0 0 0" />
+        </StackPanel>
         <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding DownloadList}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Visible">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Title" Width="2*" Binding="{Binding Title}"/>
-                <DataGridTextColumn Header="Size" Width="*" Binding="{Binding Size}"/>
-                <DataGridTemplateColumn Header="Progress" Width="2*">
+                <DataGridTemplateColumn Header="Title" Width="2*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <ProgressBar Maximum="100" Value="{Binding Progress}"/>
-                                <Label Content="{Binding Progress}" Margin="5 0 0 0"/>
-                                <Label Content="%"/>
-                            </StackPanel>
+                            <Label Content="{Binding Title}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Download Speed" Width="*" Binding="{Binding DSpeed}"/>
-                <DataGridTextColumn Header="Upload Speed" Width="*" Binding="{Binding USpeed}"/>
-                <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status}"/>
+                <DataGridTemplateColumn Header="Size" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Size}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Progress" Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <ProgressBar DockPanel.Dock="Left" Maximum="100" Value="{Binding Progress}"/>
+                                <!--<Label DockPanel.Dock="Left" Content="{Binding Progress}" Margin="5 0 0 0"/>
+                                <Label DockPanel.Dock="Left" Content="%"/>-->
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Download Speed" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding DSpeed}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Upload Speed" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding USpeed}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Status" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Status}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

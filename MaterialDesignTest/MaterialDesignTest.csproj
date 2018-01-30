@@ -41,6 +41,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\DownloadManager\DownloadManager\bin\Debug\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="MALAPI, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\GitHub\myanimelistAPI-wrapper\MALAPI\bin\Debug\MALAPI.dll</HintPath>
+    </Reference>
     <Reference Include="MALParser">
       <HintPath>..\..\MALParser\MALParser\bin\Debug\MALParser.dll</HintPath>
     </Reference>
@@ -81,6 +85,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\InvertBoolConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
+    <Compile Include="IniFile.cs" />
     <Compile Include="Models\Anime.cs" />
     <Compile Include="Models\DownloadEntry.cs" />
     <Compile Include="Models\Downloader.cs" />

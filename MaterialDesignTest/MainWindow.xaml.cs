@@ -26,11 +26,6 @@ namespace MaterialDesignTest
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Environment.Exit(0);
-        }
-
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if(!leftDrawer.IsLeftDrawerOpen && e.ChangedButton == MouseButton.Left)
@@ -57,7 +52,7 @@ namespace MaterialDesignTest
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            ((MainWindowViewModel)DataContext).DownloadAllTorrents();
+            ((MainWindowViewModel)DataContext).DownloadAllTorrents(null);
         }
     }
 }

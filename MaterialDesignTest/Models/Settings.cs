@@ -17,6 +17,7 @@ namespace MaterialDesignTest.Models
         public Visibility Loading { get; set; }
         public string Quality { get; set; } = "480p";
         public bool MinimizeOnExit { get; set; } = false;
+        public string MaxDownloadSpeed { get; set; }
 
         public List<AnimeViewModel> MainAnimeList { get; set; }
         public ObservableCollection<AnimeViewModel> DownloadList { get; set; }
@@ -24,7 +25,7 @@ namespace MaterialDesignTest.Models
         public Settings()
         {
             MainAnimeList = new List<AnimeViewModel>();
-            DownloadList = new ObservableCollection<AnimeViewModel>() { new AnimeViewModel(new Anime() { Title = "Beatless", Quality = "480p" }) };
+            DownloadList = new ObservableCollection<AnimeViewModel>();
             Loading = Visibility.Hidden;
         }
     }

@@ -14,91 +14,98 @@
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
              Height="700" Width="1000">
-    <Grid>
-        <Button ToolTip="Refresh currently airing list" Panel.ZIndex="1" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding RefreshAiringAnimesCommand}" Margin="226,127,726,541">
-            <materialDesign:PackIcon Kind="Refresh"/>
-        </Button>
-        <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Center" ToolTip="Add to the download list" Margin="0 5 0 5" Height="40" Command="{Binding AddAnimeToDownloadListCommand}" CommandParameter="{Binding ElementName=airingListBox, Path=SelectedItems}">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="ArrowRightBold" />
+    <materialDesign:DialogHost HorizontalAlignment="Center" VerticalAlignment="Center" IsOpen="{Binding DialogHostOpen}" CloseOnClickAway="True" Width="1000">
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel Margin="16">
+                <TextBlock>MyAnimeList List Username</TextBlock>
+                <TextBox Margin="0 8 0 0" HorizontalAlignment="Stretch" Text="{Binding UserListName, Mode=TwoWay}"></TextBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="{Binding Fetch_MALAPI_AnimeList}">FETCH</Button>
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="materialDesign:DialogHost.CloseDialogCommand">CANCEL</Button>
+                </StackPanel>
             </StackPanel>
-        </Button>
-        <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Center" ToolTip="Add to the download list" Margin="476,369,476,291" Height="40" Command="{Binding RemoveEntryFromDownloadList}" CommandParameter="{Binding ElementName=downloadListBox, Path=SelectedItems}">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="ArrowLeftBold" />
-            </StackPanel>
-        </Button>
-        <DockPanel>
-            <DockPanel DockPanel.Dock="Top">
-                <Button DockPanel.Dock="Right" ToolTip="Select downloads folder" Margin="10 0 10 0" Content="..." Command="{Binding DownloadsPathSelectCommand}" Width="49"/>
-                <TextBox Margin="10" materialDesign:HintAssist.Hint="Downloads Path" Text="{Binding Path=DownloadsPath}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-            </DockPanel>
-            <DockPanel DockPanel.Dock="Top">
-                <Separator/>
-                <Label VerticalAlignment="Bottom" Content="Quality:" Margin="7 0 0 0"></Label>
-                <ComboBox materialDesign:HintAssist.Hint="Quality" VerticalAlignment="Bottom" Margin="30 0 0 0" Width="70" ItemsSource="{Binding Qualities}" SelectedItem="{Binding Quality, Mode=TwoWay}"/>
-                <Label VerticalAlignment="Bottom" Content="Start downloader from:" Margin="30 0 0 0"></Label>
-                <materialDesign:TimePicker Is24Hours="True" x:Name="PresetTimePicker" Width="150" Margin="30 0 0 0" />
-                <Label VerticalAlignment="Bottom" Content="To:" Margin="30 0 0 0"></Label>
-                <materialDesign:TimePicker Is24Hours="True" x:Name="PresetTimePicker2" Width="150" Margin="30 0 0 0" />
-                <CheckBox DockPanel.Dock="Right" HorizontalAlignment="Right" Content="Minimize on exit." Margin="0 0 20 0" IsChecked="{Binding Path=MinimizeOnExit, Mode=TwoWay}"/>
-            </DockPanel>
-            <Grid Width="1000">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth3" Grid.Column="0" Padding="50" Margin="20 10 20 30">
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel Margin="0 0 0 20">
-                            <Label FontSize="20" HorizontalAlignment="Center">Currently Airing</Label>
+        </materialDesign:DialogHost.DialogContent>
+        <Grid>
+            <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Center" ToolTip="Add to the download list" Margin="0 5 0 5" Height="40" Command="{Binding AddAnimeToDownloadListCommand}" CommandParameter="{Binding ElementName=airingListBox, Path=SelectedItems}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ArrowRightBold" />
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Center" ToolTip="Add to the download list" Margin="476,369,476,291" Height="40" Command="{Binding RemoveEntryFromDownloadList}" CommandParameter="{Binding ElementName=downloadListBox, Path=SelectedItems}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ArrowLeftBold" />
+                </StackPanel>
+            </Button>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <Button DockPanel.Dock="Right" ToolTip="Select downloads folder" Margin="10 0 10 0" Content="..." Command="{Binding DownloadsPathSelectCommand}" Width="49"/>
+                    <TextBox Margin="10" materialDesign:HintAssist.Hint="Downloads Path" Text="{Binding Path=DownloadsPath}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <Separator/>
+                    <Label VerticalAlignment="Bottom" Content="Episode Quality:" Margin="7 0 0 0"/>
+                    <ComboBox materialDesign:HintAssist.Hint="Quality" VerticalAlignment="Bottom" Margin="30 0 0 0" Width="70" ItemsSource="{Binding Qualities}" SelectedItem="{Binding Quality, Mode=TwoWay}"/>
+                    <Label VerticalAlignment="Bottom" Content="Throtle download speed:" Margin="30 0 0 0"/>
+                    <ComboBox materialDesign:HintAssist.Hint="Speed" VerticalAlignment="Bottom" Margin="30 0 0 0" Width="140" ItemsSource="{Binding MaxDownloadSpeeds}" SelectedItem="{Binding MaxDownloadSpeed, Mode=TwoWay}"/>
+                    <CheckBox DockPanel.Dock="Right" HorizontalAlignment="Right" Content="Minimize on exit." Margin="0 0 20 0" IsChecked="{Binding Path=MinimizeOnExit, Mode=TwoWay}"/>
+                </DockPanel>
+                <Grid Width="1000">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth3" Grid.Column="0" Padding="50 20 50 50" Margin="20 20 20 30">
+                        <StackPanel Orientation="Vertical">
+                            <Button ToolTip="Refresh currently airing list" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding RefreshAiringAnimesCommand}">
+                                <materialDesign:PackIcon Kind="Refresh"/>
+                            </Button>
+                            <StackPanel Margin="0 0 0 20">
+                                <Label FontSize="20" HorizontalAlignment="Center">Currently Airing</Label>
+                            </StackPanel>
+                            <DockPanel>
+                                <TextBox DockPanel.Dock="Left" materialDesign:HintAssist.Hint="Filter List" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            </DockPanel>
+                            <ProgressBar Value="50" IsIndeterminate="True" Visibility="{Binding Loading}" Height="3"/>
+                            <ListBox x:Name="airingListBox" ItemsSource="{Binding AnimeList}" Margin="0 0 0 10" Height="275" SelectionMode="Extended">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="{Binding Title}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </StackPanel>
-                        <DockPanel>
-                            <TextBox DockPanel.Dock="Left" materialDesign:HintAssist.Hint="Filter List" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        </DockPanel>
-                        <ProgressBar Value="50" IsIndeterminate="True" Visibility="{Binding Loading}" Height="3"/>
-                        <ListBox x:Name="airingListBox" ItemsSource="{Binding AnimeList}" Margin="0 0 0 10" Height="275" SelectionMode="Extended">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Content="{Binding Title}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                </materialDesign:Card>
-                <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth3" Grid.Column="1" Padding="50" Margin="20 10 20 20" >
-                    <StackPanel Orientation="Vertical">
-                        <Label FontSize="20" HorizontalAlignment="Center" Margin="0 0 0 20">Download List</Label>
-                        <DockPanel>
-                            <TextBox DockPanel.Dock="Left" materialDesign:HintAssist.Hint="Add manually" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding ManualTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                <TextBox.InputBindings>
-                                    <KeyBinding Key="Return" Command="{Binding AddManualTitleCommand}"/>
-                                </TextBox.InputBindings>
-                            </TextBox>
-                        </DockPanel>
-                        <ListBox x:Name="downloadListBox" Margin="0 2 0 10" Height="275" ItemsSource="{Binding DownloadList}" SelectionMode="Extended">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Content="{Binding Title}"/>
-                                        <Label Content=" - "/>
-                                        <Label Content="{Binding Quality}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <DockPanel/>
-                    </StackPanel>
-                </materialDesign:Card>
-            </Grid>
-            <DataGrid ItemsSource="{Binding AnimeList}" AutoGenerateColumns="False" Margin="0,233,0,0" Visibility="Hidden">
-                <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="Download" Width="*" Binding="{Binding Download}"/>
-                    <DataGridTextColumn Header="Anime Title" Width="5*" Binding="{Binding Title}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
-    </Grid>
+                    </materialDesign:Card>
+                    <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth3" Grid.Column="1" Padding="50 20 50 50" Margin="20 20 20 20" >
+                        <StackPanel Orientation="Vertical">
+                            <Button ToolTip="Fetch MyAnimeList currently watching animes" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                <materialDesign:PackIcon Kind="Download"/>
+                            </Button>
+                            <Label FontSize="20" HorizontalAlignment="Center" Margin="0 0 0 20">Download List</Label>
+                            <DockPanel>
+                                <TextBox DockPanel.Dock="Left" materialDesign:HintAssist.Hint="Add manually" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding ManualTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Return" Command="{Binding AddManualTitleCommand}"/>
+                                    </TextBox.InputBindings>
+                                </TextBox>
+                            </DockPanel>
+                            <ListBox x:Name="downloadListBox" Margin="0 2 0 10" Height="275" ItemsSource="{Binding DownloadList}" SelectionMode="Extended">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="{Binding Title}"/>
+                                            <Label Content=" - "/>
+                                            <Label Content="{Binding Quality}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <DockPanel/>
+                        </StackPanel>
+                    </materialDesign:Card>
+                </Grid>
+            </DockPanel>
+        </Grid>
+    </materialDesign:DialogHost>
 </UserControl>
